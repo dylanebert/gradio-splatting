@@ -1,0 +1,25 @@
+{
+  "name": "gradio_model3dgs",
+  "version": "0.4.1",
+  "description": "Gradio UI packages",
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "private": false,
+  "dependencies": {
+    "@gradio/atoms": "0.2.1",
+    "@gradio/client": "0.7.2",
+    "@gradio/icons": "0.2.0",
+    "@gradio/statustracker": "0.3.1",
+    "@gradio/upload": "0.3.3",
+    "@gradio/utils": "0.2.0",
+    "gsplat": "^0.2.4"
+  },
+  "main_changeset": true,
+  "main": "./Index.svelte",
+  "exports": {
+    ".": "./Index.svelte",
+    "./example": "./Example.svelte",
+    "./package.json": "./package.json"
+  }
+}
