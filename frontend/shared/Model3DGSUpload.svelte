@@ -21,18 +21,39 @@
     let renderer: SPLAT.WebGLRenderer | null = null;
     let controls: SPLAT.OrbitControls;
     let loading = false;
+    let rendering = false;
 
     function reset_scene(): void {
-        if (renderer !== null) {
+        if (renderer) {
             renderer.dispose();
         }
+        
         renderer = new SPLAT.WebGLRenderer(canvas);
         controls = new SPLAT.OrbitControls(camera, canvas);
         controls.zoomSpeed = zoom_speed;
         controls.panSpeed = pan_speed;
 
+        if (!value) {
+            return;
+        }
+
+        const load = async () => {
+            if (loading) {
+                console.error("Already loading");
+                return;
+            }
+            loading = true;
+            await SPLAT.Loader.LoadAsync(value.url, scene, (progress) => {
+                // TODO: progress bar
+            });
+            loading = false;
+        };
+
         const frame = () => {
-            if (value == null) return;
+            if (!rendering) {
+                return;
+            }
+
             if (loading) {
                 requestAnimationFrame(frame);
                 return;
@@ -44,6 +65,8 @@
             requestAnimationFrame(frame);
         };
 
+        load();
+        rendering = true;
         requestAnimationFrame(frame);
     }
 
@@ -62,21 +85,18 @@
     async function handle_upload({ detail }: CustomEvent<FileData>): Promise<void> {
         value = detail;
         await tick();
-        loading = true;
         reset_scene();
-        await SPLAT.Loader.LoadAsync(value.url, scene, (progress) => {
-            // TODO: Progress bar
-        });
-        loading = false;
         dispatch("change", value);
     }
 
     async function handle_clear(): Promise<void> {
         value = null;
-        if (renderer != null) {
+        if (renderer) {
             renderer.dispose();
             renderer = null;
         }
+        loading = false;
+        rendering = false;
         await tick();
         dispatch("clear");
     }

@@ -19,46 +19,12 @@
     let renderer: SPLAT.WebGLRenderer | null = null;
     let controls: SPLAT.OrbitControls;
     let loading = false;
+    let rendering = false;
     let mounted = false;
 
     onMount(() => {
         scene = new SPLAT.Scene();
         camera = new SPLAT.Camera();
-        renderer = new SPLAT.WebGLRenderer(canvas);
-        controls = new SPLAT.OrbitControls(camera, canvas);
-        controls.zoomSpeed = zoom_speed;
-        controls.panSpeed = pan_speed;
-
-        const load = async (url: string) => {
-            if (loading) {
-                console.error("Already loading");
-                return;
-            }
-            loading = true;
-            await SPLAT.Loader.LoadAsync(url, scene, (progress) => {
-                // TODO: Progress bar
-            });
-            loading = false;
-        };
-        load(value.url);
-
-        const frame = () => {
-            if (loading) {
-                requestAnimationFrame(frame);
-                return;
-            }
-
-            controls.update();
-            renderer.render(scene, camera);
-
-            requestAnimationFrame(frame);
-        };
-
-        requestAnimationFrame(frame);
-
-        window.addEventListener("resize", () => {
-            renderer?.resize();
-        });
         mounted = true;
     });
 
@@ -80,9 +46,50 @@
     $: canvas && mounted && path && dispose();
 
     function dispose() {
-        if (renderer !== null && !loading) {
+        if (renderer !== null) {
             renderer.dispose();
         }
+
+        renderer = new SPLAT.WebGLRenderer(canvas);
+        controls = new SPLAT.OrbitControls(camera, canvas);
+        controls.zoomSpeed = zoom_speed;
+        controls.panSpeed = pan_speed;
+
+        if (!value) {
+            return;
+        }
+
+        const load = async () => {
+            if (loading) {
+                console.error("Already loading");
+                return;
+            }
+            loading = true;
+            await SPLAT.Loader.LoadAsync(value.url, scene, (progress) => {
+                // TODO: progress bar
+            });
+            loading = false;
+        };
+
+        const frame = () => {
+            if (!rendering) {
+                return;
+            }
+
+            if (loading) {
+                requestAnimationFrame(frame);
+                return;
+            }
+
+            controls.update();
+            renderer.render(scene, camera);
+
+            requestAnimationFrame(frame);
+        };
+
+        load();
+        rendering = true;
+        requestAnimationFrame(frame);
     }
 </script>
 
