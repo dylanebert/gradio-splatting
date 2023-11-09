@@ -80,7 +80,7 @@
         path: undefined,
     });
 
-    $: canvas && mounted && path != null;
+    $: canvas && mounted && path != null && reset_scene();
 
     async function handle_upload({ detail }: CustomEvent<FileData>): Promise<void> {
         value = detail;
