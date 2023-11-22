@@ -65,9 +65,17 @@
                 return;
             }
             loading = true;
-            await SPLAT.Loader.LoadAsync(value.url, scene, (progress) => {
-                // TODO: progress bar
-            });
+            if (value.url.endsWith(".ply")) {
+                await SPLAT.PLYLoader.LoadAsync(value.url, scene, (progress) => {
+                    // TODO: progress bar
+                });
+            } else if (value.url.endsWith(".splat")) {
+                await SPLAT.Loader.LoadAsync(value.url, scene, (progress) => {
+                    // TODO: progress bar
+                });
+            } else {
+                throw new Error("Unsupported file type");
+            }
             loading = false;
         };
 
