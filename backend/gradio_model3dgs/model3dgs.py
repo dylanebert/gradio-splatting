@@ -95,4 +95,7 @@ class Model3DGS(Component):
         return Path(input_data).name if input_data else ""
 
     def example_inputs(self):
-        return "https://huggingface.co/datasets/dylanebert/3dgs/resolve/main/bonsai/bonsai-7k.splat"
+        return [
+            "https://huggingface.co/datasets/dylanebert/3dgs/resolve/main/bonsai/bonsai-7k-mini.splat",
+            "https://huggingface.co/datasets/dylanebert/3dgs/resolve/main/luigi/luigi.ply",
+        ]

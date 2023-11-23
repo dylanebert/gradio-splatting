@@ -12,7 +12,8 @@ demo = gr.Interface(
     inputs=Model3DGS(),
     outputs=Model3DGS(),
     examples=[
-        "https://huggingface.co/datasets/dylanebert/3dgs/resolve/main/bonsai/bonsai-7k.splat"
+        "https://huggingface.co/datasets/dylanebert/3dgs/resolve/main/bonsai/bonsai-7k-mini.splat",
+        "https://huggingface.co/datasets/dylanebert/3dgs/resolve/main/luigi/luigi.ply",
     ],
     cache_examples=True,
 )
