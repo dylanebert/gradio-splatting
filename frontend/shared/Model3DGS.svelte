@@ -18,13 +18,18 @@
     let camera: SPLAT.Camera;
     let renderer: SPLAT.WebGLRenderer | null = null;
     let controls: SPLAT.OrbitControls;
-    let loading = false;
-    let rendering = false;
     let mounted = false;
 
     onMount(() => {
         scene = new SPLAT.Scene();
         camera = new SPLAT.Camera();
+        renderer = new SPLAT.WebGLRenderer(canvas);
+        controls = new SPLAT.OrbitControls(camera, canvas);
+        controls.zoomSpeed = zoom_speed;
+        controls.panSpeed = pan_speed;
+        window.addEventListener("resize", () => {
+            renderer?.resize();
+        });
         mounted = true;
     });
 
@@ -32,11 +37,9 @@
         if (!value) {
             return;
         }
-        const blob = new Blob([scene.data.buffer], { type: "application/octet-stream" });
-        const link = document.createElement("a");
-        link.download = "model.splat";
-        link.href = window.URL.createObjectURL(blob);
-        link.click();
+        let filename = value.orig_name || value.path.split("/").pop() || "model.splat";
+        filename = filename.replace(/\.ply$/, ".splat");
+        scene.saveToFile(filename);
     }
 
     $: ({ path } = value || {
@@ -59,6 +62,7 @@
             return;
         }
 
+        let loading = false;
         const load = async () => {
             if (loading) {
                 console.error("Already loading");
@@ -80,7 +84,7 @@
         };
 
         const frame = () => {
-            if (!rendering) {
+            if (!renderer) {
                 return;
             }
 
@@ -96,7 +100,6 @@
         };
 
         load();
-        rendering = true;
         requestAnimationFrame(frame);
     }
 </script>

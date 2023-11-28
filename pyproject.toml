@@ -8,7 +8,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "gradio_model3dgs"
-version = "0.1.9"
+version = "0.2.0"
 description = "Python library for easily interacting with trained machine learning models"
 readme = "README.md"
 license = "Apache-2.0"
@@ -43,7 +43,7 @@ classifiers = [
 dev = ["build", "twine"]
 
 [tool.hatch.build]
-artifacts = ["/backend/gradio_model3dgs/templates", "*.pyi", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates"]
+artifacts = ["/backend/gradio_model3dgs/templates", "*.pyi", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates", "backend/gradio_model3dgs/templates"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["/backend/gradio_model3dgs"]

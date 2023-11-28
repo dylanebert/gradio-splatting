@@ -20,14 +20,14 @@
     let camera: SPLAT.Camera;
     let renderer: SPLAT.WebGLRenderer | null = null;
     let controls: SPLAT.OrbitControls;
-    let loading = false;
-    let rendering = false;
 
     function reset_scene(): void {
         if (renderer) {
             renderer.dispose();
         }
 
+        scene = new SPLAT.Scene();
+        camera = new SPLAT.Camera();
         renderer = new SPLAT.WebGLRenderer(canvas);
         controls = new SPLAT.OrbitControls(camera, canvas);
         controls.zoomSpeed = zoom_speed;
@@ -37,6 +37,7 @@
             return;
         }
 
+        let loading = false;
         const load = async () => {
             if (loading) {
                 console.error("Already loading");
@@ -58,7 +59,7 @@
         };
 
         const frame = () => {
-            if (!rendering) {
+            if (!renderer) {
                 return;
             }
 
@@ -74,13 +75,13 @@
         };
 
         load();
-        rendering = true;
         requestAnimationFrame(frame);
     }
 
     onMount(() => {
-        scene = new SPLAT.Scene();
-        camera = new SPLAT.Camera();
+        if (value != null) {
+            reset_scene();
+        }
         mounted = true;
     });
 
@@ -95,6 +96,7 @@
         await tick();
         reset_scene();
         dispatch("change", value);
+        dispatch("load", value);
     }
 
     async function handle_clear(): Promise<void> {
@@ -103,16 +105,16 @@
             renderer.dispose();
             renderer = null;
         }
-        loading = false;
-        rendering = false;
         await tick();
         dispatch("clear");
+        dispatch("change");
     }
 
     const dispatch = createEventDispatcher<{
         change: FileData | null;
         clear: undefined;
         drag: boolean;
+        load: FileData;
     }>();
 
     let dragging = false;
