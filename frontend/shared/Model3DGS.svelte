@@ -19,40 +19,21 @@
     let renderer: SPLAT.WebGLRenderer | null = null;
     let controls: SPLAT.OrbitControls;
     let mounted = false;
+    let frameId: number | null = null;
 
-    onMount(() => {
-        scene = new SPLAT.Scene();
-        camera = new SPLAT.Camera();
-        renderer = new SPLAT.WebGLRenderer(canvas);
-        controls = new SPLAT.OrbitControls(camera, canvas);
-        controls.zoomSpeed = zoom_speed;
-        controls.panSpeed = pan_speed;
-        window.addEventListener("resize", () => {
-            renderer?.resize();
-        });
-        mounted = true;
-    });
-
-    function download() {
-        if (!value) {
-            return;
+    function reset_scene(): void {
+        if (frameId !== null) {
+            cancelAnimationFrame(frameId);
+            frameId = null;
         }
-        let filename = value.orig_name || value.path.split("/").pop() || "model.splat";
-        filename = filename.replace(/\.ply$/, ".splat");
-        scene.saveToFile(filename);
-    }
 
-    $: ({ path } = value || {
-        path: undefined,
-    });
-
-    $: canvas && mounted && path && dispose();
-
-    function dispose() {
         if (renderer !== null) {
             renderer.dispose();
+            renderer = null;
         }
 
+        scene = new SPLAT.Scene();
+        camera = new SPLAT.Camera();
         renderer = new SPLAT.WebGLRenderer(canvas);
         controls = new SPLAT.OrbitControls(camera, canvas);
         controls.zoomSpeed = zoom_speed;
@@ -89,19 +70,41 @@
             }
 
             if (loading) {
-                requestAnimationFrame(frame);
+                frameId = requestAnimationFrame(frame);
                 return;
             }
 
             controls.update();
             renderer.render(scene, camera);
 
-            requestAnimationFrame(frame);
+            frameId = requestAnimationFrame(frame);
         };
 
         load();
-        requestAnimationFrame(frame);
+        frameId = requestAnimationFrame(frame);
     }
+
+    onMount(() => {
+        if (value != null) {
+            reset_scene();
+        }
+        mounted = true;
+    });
+
+    function download() {
+        if (!value) {
+            return;
+        }
+        let filename = value.orig_name || value.path.split("/").pop() || "model.splat";
+        filename = filename.replace(/\.ply$/, ".splat");
+        scene.saveToFile(filename);
+    }
+
+    $: ({ path } = value || {
+        path: undefined,
+    });
+
+    $: canvas && mounted && path && reset_scene();
 </script>
 
 <BlockLabel {show_label} Icon={File} label={label || i18n("3DGS_model.splat")} />

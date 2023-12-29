@@ -20,10 +20,17 @@
     let camera: SPLAT.Camera;
     let renderer: SPLAT.WebGLRenderer | null = null;
     let controls: SPLAT.OrbitControls;
+    let frameId: number | null = null;
 
     function reset_scene(): void {
-        if (renderer) {
+        if (frameId !== null) {
+            cancelAnimationFrame(frameId);
+            frameId = null;
+        }
+
+        if (renderer !== null) {
             renderer.dispose();
+            renderer = null;
         }
 
         scene = new SPLAT.Scene();
@@ -64,18 +71,18 @@
             }
 
             if (loading) {
-                requestAnimationFrame(frame);
+                frameId = requestAnimationFrame(frame);
                 return;
             }
 
             controls.update();
             renderer.render(scene, camera);
 
-            requestAnimationFrame(frame);
+            frameId = requestAnimationFrame(frame);
         };
 
         load();
-        requestAnimationFrame(frame);
+        frameId = requestAnimationFrame(frame);
     }
 
     onMount(() => {
