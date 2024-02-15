@@ -1,10 +1,3 @@
+# :warning: DEPRECATED
 
-# gradio_model3dgs
-A Custom Gradio component.
-
-## Example usage
-
-```python
-import gradio as gr
-from gradio_model3dgs import Model3DGS
-```
+This repository is no longer maintained. Use the official Gradio [Model3D component](https://www.gradio.app/docs/model3d) for Gaussian Splatting.
